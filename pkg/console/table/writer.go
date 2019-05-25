@@ -23,6 +23,7 @@ type TableWriter struct {
 	HeaderDecorator Decorator
 	ColPadding      int
 	Rows            [][]string
+	RowEmoji        string
 }
 
 func (w *TableWriter) SetHeader(header []string) {
@@ -67,7 +68,11 @@ func (w *TableWriter) writeRow(row []string, colsSize map[int]int, decorator Dec
 
 	line := "   "
 	if !header {
-		line = emoji.Sprint(":small_blue_diamond: ")
+		line = w.RowEmoji
+		if w.RowEmoji == "" {
+			line = emoji.Sprint(":small_blue_diamond:")
+		}
+		line = line + " "
 	}
 	for i, c := range row {
 		line += padding(c, colsSize[i]+w.ColPadding)

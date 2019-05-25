@@ -9,6 +9,7 @@ import (
 	"github.com/fatih/color"
 
 	"github.com/cd1989/cycli/pkg/console/table"
+	"github.com/kyokomi/emoji"
 )
 
 func RenderTplItems(tpls []v1alpha1.Stage) {
@@ -50,6 +51,7 @@ func RenderStgItems(stgs []v1alpha1.Stage) {
 		Header:          []string{"NAME", "NAMESPACE", "PROJECT", "CREATED", "DESC"},
 		HeaderDecorator: color.New(color.FgBlue, color.Bold).SprintFunc(),
 		Rows:            rows,
+		RowEmoji:        emoji.Sprint(":cake:"),
 	}
 
 	tableWriter.Write()

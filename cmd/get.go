@@ -13,6 +13,7 @@ import (
 
 func init() {
 	getCmd.PersistentFlags().StringP("project", "p", "", "Project of the resources")
+	getCmd.PersistentFlags().StringP("type", "t", "", "Type of the resources")
 	rootCmd.AddCommand(getCmd)
 }
 
@@ -45,7 +46,7 @@ var getCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		switch args[0] {
 		case common.TypeResource, common.TypeResourceShort:
-			resources.Get(args[1:])
+			resources.Get(cmd, args[1:])
 		case common.TypeStage, common.TypeStageShort:
 			stages.Get(args[1:], false)
 		case common.TypeStgTemplate, common.TypeStgTemplateShort:

@@ -2,8 +2,11 @@ package common
 
 import (
 	"fmt"
+	"strings"
 	"syscall"
 	"unsafe"
+
+	"github.com/spf13/cobra"
 )
 
 type winsize struct {
@@ -40,4 +43,16 @@ func ExecNamespace(tenant string) string {
 	}
 
 	return fmt.Sprintf("cyclone--%s", tenant)
+}
+
+func Equal(v1, v2 string) bool {
+	return strings.TrimSpace(strings.ToLower(v1)) == strings.TrimSpace(strings.ToLower(v2))
+}
+
+func GetFlagValue(cmd *cobra.Command, name string) string {
+	if f := cmd.Flag(name); f != nil {
+		return f.Value.String()
+	}
+
+	return ""
 }
