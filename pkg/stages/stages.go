@@ -2,7 +2,6 @@ package stages
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/caicloud/cyclone/pkg/apis/cyclone/v1alpha1"
 	"github.com/caicloud/cyclone/pkg/meta"
@@ -73,7 +72,7 @@ func getStage(args []string) {
 			fmt.Printf("Stage %s %s %s\n", args[0], color.RedString("NOT FOUND"), emoji.Sprint(":beer:"))
 		}
 
-		RenderItem(stg)
+		RenderStgItems([]v1alpha1.Stage{*stg})
 		return
 	}
 
@@ -85,9 +84,7 @@ func getStage(args []string) {
 		return
 	}
 
-	for _, stg := range stages.Items {
-		RenderItem(&stg)
-	}
+	RenderStgItems(stages.Items)
 }
 
 func getScope(tpl *v1alpha1.Stage) string {
@@ -105,14 +102,16 @@ func getType(tpl *v1alpha1.Stage) string {
 	return "--"
 }
 
-func getCreated(stg *v1alpha1.Stage) string {
-	return stg.CreationTimestamp.Format(time.RFC3339)
+func getLabel(stg *v1alpha1.Stage, label string) string {
+	if stg.Labels != nil && stg.Labels[label] != "" {
+		return stg.Labels[label]
+	}
+	return "--"
 }
 
-func getDesc(stg *v1alpha1.Stage) string {
-	if stg.Annotations != nil && stg.Annotations[meta.AnnotationDescription] != "" {
-		return stg.Annotations[meta.AnnotationDescription]
+func getAnnotation(stg *v1alpha1.Stage, annotation string) string {
+	if stg.Annotations != nil && stg.Annotations[annotation] != "" {
+		return stg.Annotations[annotation]
 	}
-
 	return "--"
 }

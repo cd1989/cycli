@@ -7,6 +7,7 @@ import (
 
 	"strings"
 
+	"github.com/kyokomi/emoji"
 	"github.com/mattn/go-runewidth"
 )
 
@@ -44,9 +45,9 @@ func (w *TableWriter) Write() {
 		}
 	}
 
-	w.writeRow(w.Header, colsSize, w.HeaderDecorator)
+	w.writeRow(w.Header, colsSize, w.HeaderDecorator, true)
 	for _, r := range w.Rows {
-		w.writeRow(r, colsSize, nil)
+		w.writeRow(r, colsSize, nil, false)
 	}
 }
 
@@ -59,12 +60,15 @@ func padding(s string, length int) string {
 	return s + strings.Repeat(" ", length-l)
 }
 
-func (w *TableWriter) writeRow(row []string, colsSize map[int]int, decorator Decorator) {
+func (w *TableWriter) writeRow(row []string, colsSize map[int]int, decorator Decorator, header bool) {
 	if decorator == nil {
 		decorator = DefaultDecorator
 	}
 
-	line := ""
+	line := "   "
+	if !header {
+		line = emoji.Sprint(":small_blue_diamond: ")
+	}
 	for i, c := range row {
 		line += padding(c, colsSize[i]+w.ColPadding)
 	}
