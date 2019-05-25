@@ -13,6 +13,7 @@ import (
 	"github.com/cd1989/cycli/pkg/client"
 	"github.com/cd1989/cycli/pkg/common"
 	"github.com/cd1989/cycli/pkg/console"
+	"github.com/cd1989/cycli/pkg/context"
 )
 
 func Get(args []string, template bool) {
@@ -26,7 +27,7 @@ func Get(args []string, template bool) {
 func getTemplate(args []string) {
 	// Whether get a given stage/template, args[0] gives the name
 	if len(args) > 0 {
-		tpl, err := client.K8sClient.CycloneV1alpha1().Stages("default").Get(args[0], metav1.GetOptions{})
+		tpl, err := client.K8sClient.CycloneV1alpha1().Stages(common.MetaNamespace(context.GetTenant())).Get(args[0], metav1.GetOptions{})
 		if err != nil {
 			if errors.IsNotFound(err) {
 				fmt.Printf("Template %s %s %s\n", args[0], color.RedString("NOT FOUND"), emoji.Sprint(":beer:"))
@@ -44,7 +45,7 @@ func getTemplate(args []string) {
 		return
 	}
 
-	templates, err := client.K8sClient.CycloneV1alpha1().Stages("default").List(metav1.ListOptions{
+	templates, err := client.K8sClient.CycloneV1alpha1().Stages(common.MetaNamespace(context.GetTenant())).List(metav1.ListOptions{
 		LabelSelector: meta.LabelStageTemplate,
 	})
 	if err != nil {
@@ -58,7 +59,7 @@ func getTemplate(args []string) {
 func getStage(args []string) {
 	// Whether get a given stage/template, args[0] gives the name
 	if len(args) > 0 {
-		stg, err := client.K8sClient.CycloneV1alpha1().Stages("default").Get(args[0], metav1.GetOptions{})
+		stg, err := client.K8sClient.CycloneV1alpha1().Stages(common.MetaNamespace(context.GetTenant())).Get(args[0], metav1.GetOptions{})
 		if err != nil {
 			if errors.IsNotFound(err) {
 				fmt.Printf("Stage %s %s %s\n", args[0], color.RedString("NOT FOUND"), emoji.Sprint(":beer:"))
@@ -76,7 +77,7 @@ func getStage(args []string) {
 		return
 	}
 
-	stages, err := client.K8sClient.CycloneV1alpha1().Stages("default").List(metav1.ListOptions{
+	stages, err := client.K8sClient.CycloneV1alpha1().Stages(common.MetaNamespace(context.GetTenant())).List(metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("!%s", meta.LabelStageTemplate),
 	})
 	if err != nil {

@@ -35,8 +35,7 @@ test:
 	go test $(PKGS)
 
 build-local:
-	CGO_ENABLED=0 GOARCH=amd64 \
-	go build -i -v -o ./bin/cycli -ldflags "-s -w" ./
+	CGO_ENABLED=0 GOARCH=amd64 go build -i -v -o ./bin/cycli -ldflags "-s -w" ./
 
 .PHONY: clean
 clean:

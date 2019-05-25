@@ -14,5 +14,8 @@ const (
 	TypeStgTemplate         = "template"
 	TypeStgTemplateShort    = "tpl"
 
+	ContextTenant  = "tenant"
+	ContextProject = "project"
+
 	LabelTemplateKind = "stage.cyclone.dev/template-kind"
 )

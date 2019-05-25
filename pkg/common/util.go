@@ -1,6 +1,7 @@
 package common
 
 import (
+	"fmt"
 	"syscall"
 	"unsafe"
 )
@@ -23,4 +24,20 @@ func TermSize() (uint, uint) {
 		panic(errno)
 	}
 	return uint(ws.Col), uint(ws.Row)
+}
+
+func MetaNamespace(tenant string) string {
+	if len(tenant) == 0 {
+		return "default"
+	}
+
+	return fmt.Sprintf("cyclone-%s", tenant)
+}
+
+func ExecNamespace(tenant string) string {
+	if len(tenant) == 0 {
+		return "default"
+	}
+
+	return fmt.Sprintf("cyclone--%s", tenant)
 }
