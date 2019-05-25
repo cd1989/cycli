@@ -1,6 +1,8 @@
 # cycli
 CLI interface for Cyclone
 
+![cycli.gif](./docs/img/cycli.gif)
+
 ## Build
 
 ```bash

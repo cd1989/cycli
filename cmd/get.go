@@ -14,6 +14,9 @@ import (
 func init() {
 	getCmd.PersistentFlags().StringP("project", "p", "", "Project of the resources")
 	getCmd.PersistentFlags().StringP("type", "t", "", "Type of the resources")
+	getCmd.PersistentFlags().StringP("status", "s", "", "Status of WorkflowRun")
+	getCmd.PersistentFlags().StringP("clean", "c", "", "Whether GC is performed")
+	getCmd.PersistentFlags().StringP("wf", "w", "", "Workflow")
 	rootCmd.AddCommand(getCmd)
 }
 
@@ -54,7 +57,7 @@ var getCmd = &cobra.Command{
 		case common.TypeWorkflow, common.TypeWorkflowShort:
 			workflows.Get(args[1:])
 		case common.TypeWorkflowRun, common.TypeWorkflowRunShort:
-			workflowruns.Get(args[1:])
+			workflowruns.Get(cmd, args[1:])
 		case common.TypeWorkflowTrigger, common.TypeWorkflowTrigerShort:
 			workflowtriggers.Get(args[1:])
 		}

@@ -34,9 +34,9 @@ func Get(cmd *cobra.Command, args []string) {
 		rsc, err := client.K8sClient.CycloneV1alpha1().Resources(common.MetaNamespace(context.GetTenant())).Get(args[0], metav1.GetOptions{})
 		if err != nil {
 			if errors.IsNotFound(err) {
-				fmt.Printf("Template %s %s %s\n", args[0], color.RedString("NOT FOUND"), emoji.Sprint(":beer:"))
+				fmt.Printf("Resource %s %s %s\n", args[0], color.RedString("NOT FOUND"), emoji.Sprint(":beer:"))
 			} else {
-				console.Error("Get template error: ", err)
+				console.Error("Get resource error: ", err)
 			}
 			return
 		}
@@ -47,7 +47,7 @@ func Get(cmd *cobra.Command, args []string) {
 
 	rscs, err := client.K8sClient.CycloneV1alpha1().Resources(common.MetaNamespace(context.GetTenant())).List(*listOptions(cmd))
 	if err != nil {
-		console.Error("Get template error: ", err)
+		console.Error("Get resource error: ", err)
 		return
 	}
 
