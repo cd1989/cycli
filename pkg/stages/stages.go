@@ -7,6 +7,7 @@ import (
 	"github.com/caicloud/cyclone/pkg/meta"
 	"github.com/fatih/color"
 	"github.com/kyokomi/emoji"
+	"github.com/spf13/cobra"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -16,15 +17,15 @@ import (
 	"github.com/cd1989/cycli/pkg/context"
 )
 
-func Get(args []string, template bool) {
+func Get(cmd *cobra.Command, args []string, template bool) {
 	if template {
-		getTemplate(args)
+		getTemplate(cmd, args)
 	} else {
-		getStage(args)
+		getStage(cmd, args)
 	}
 }
 
-func getTemplate(args []string) {
+func getTemplate(cmd *cobra.Command, args []string) {
 	// Whether get a given stage/template, args[0] gives the name
 	if len(args) > 0 {
 		tpl, err := client.K8sClient.CycloneV1alpha1().Stages(common.MetaNamespace(context.GetTenant())).Get(args[0], metav1.GetOptions{})
@@ -45,6 +46,10 @@ func getTemplate(args []string) {
 		return
 	}
 
+	labelSelector := fmt.Sprintf("%s", meta.LabelStageTemplate)
+	if p := common.GetFlagValue(cmd, "project"); p != "" {
+		labelSelector = fmt.Sprintf("%s,%s=%s", labelSelector, meta.LabelProjectName, p)
+	}
 	templates, err := client.K8sClient.CycloneV1alpha1().Stages(common.MetaNamespace(context.GetTenant())).List(metav1.ListOptions{
 		LabelSelector: meta.LabelStageTemplate,
 	})
@@ -56,7 +61,7 @@ func getTemplate(args []string) {
 	RenderTplItems(templates.Items)
 }
 
-func getStage(args []string) {
+func getStage(cmd *cobra.Command, args []string) {
 	// Whether get a given stage/template, args[0] gives the name
 	if len(args) > 0 {
 		stg, err := client.K8sClient.CycloneV1alpha1().Stages(common.MetaNamespace(context.GetTenant())).Get(args[0], metav1.GetOptions{})
@@ -77,8 +82,12 @@ func getStage(args []string) {
 		return
 	}
 
+	labelSelector := fmt.Sprintf("!%s", meta.LabelStageTemplate)
+	if p := common.GetFlagValue(cmd, "project"); p != "" {
+		labelSelector = fmt.Sprintf("%s,%s=%s", labelSelector, meta.LabelProjectName, p)
+	}
 	stages, err := client.K8sClient.CycloneV1alpha1().Stages(common.MetaNamespace(context.GetTenant())).List(metav1.ListOptions{
-		LabelSelector: fmt.Sprintf("!%s", meta.LabelStageTemplate),
+		LabelSelector: labelSelector,
 	})
 	if err != nil {
 		console.Error("List stages error: ", err)

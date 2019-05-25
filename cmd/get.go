@@ -52,9 +52,9 @@ var getCmd = &cobra.Command{
 		case common.TypeResource, common.TypeResourceShort:
 			resources.Get(cmd, args[1:])
 		case common.TypeStage, common.TypeStageShort:
-			stages.Get(args[1:], false)
+			stages.Get(cmd, args[1:], false)
 		case common.TypeStgTemplate, common.TypeStgTemplateShort:
-			stages.Get(args[1:], true)
+			stages.Get(cmd, args[1:], true)
 		case common.TypeWorkflow, common.TypeWorkflowShort:
 			workflows.Get(cmd, args[1:])
 		case common.TypeWorkflowRun, common.TypeWorkflowRunShort:
