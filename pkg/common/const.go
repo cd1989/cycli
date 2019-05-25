@@ -11,4 +11,8 @@ const (
 	TypeWorkflowRunShort    = "wfr"
 	TypeWorkflowTrigger     = "workflowtrigger"
 	TypeWorkflowTrigerShort = "wft"
+	TypeStgTemplate         = "template"
+	TypeStgTemplateShort    = "tpl"
+
+	LabelTemplateKind = "stage.cyclone.dev/template-kind"
 )

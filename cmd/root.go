@@ -1,26 +1,24 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
-	"github.com/kyokomi/emoji"
 	"github.com/spf13/cobra"
 )
 
-var (
-	cfgFile string
-)
-
 var rootCmd = &cobra.Command{
-	Use:   "cycli",
-	Short: "CLI to interact with Cyclone",
-	Long:  "CLI to interact with Cyclone",
+	Use:     "cycli",
+	Version: "v0.0.1",
+	Short:   "CLI to interact with Cyclone",
+	Long:    "CLI to interact with Cyclone",
+}
+
+func init() {
+	rootCmd.SetVersionTemplate(`Cyclone CLI interface, {{printf "Version %s" .Version}}, Author: De Chen`)
 }
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(emoji.Sprintf(":confused: : %v", err))
 		os.Exit(1)
 	}
 }

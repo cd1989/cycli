@@ -9,3 +9,15 @@
 [[constraint]]
   name = "github.com/spf13/cobra"
   version = "0.0.4"
+
+[[constraint]]
+  name = "k8s.io/client-go"
+  version = "kubernetes-1.12.3"
+
+[[constraint]]
+  name = "github.com/caicloud/cyclone"
+  branch = "master"
+
+[[constraint]]
+  name = "github.com/fatih/color"
+  version = "1.7.0"

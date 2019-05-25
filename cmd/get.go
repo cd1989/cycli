@@ -30,7 +30,9 @@ var getCmd = &cobra.Command{
 		common.TypeWorkflowRun,
 		common.TypeWorkflowRunShort,
 		common.TypeWorkflowTrigger,
-		common.TypeWorkflowTrigerShort},
+		common.TypeWorkflowTrigerShort,
+		common.TypeStgTemplate,
+		common.TypeStgTemplateShort},
 	Args: func(cmd *cobra.Command, args []string) error {
 		if err := cobra.MinimumNArgs(1)(cmd, args); err != nil {
 			return err
@@ -45,7 +47,9 @@ var getCmd = &cobra.Command{
 		case common.TypeResource, common.TypeResourceShort:
 			resources.Get(args[1:])
 		case common.TypeStage, common.TypeStageShort:
-			stages.Get(args[1:])
+			stages.Get(args[1:], false)
+		case common.TypeStgTemplate, common.TypeStgTemplateShort:
+			stages.Get(args[1:], true)
 		case common.TypeWorkflow, common.TypeWorkflowShort:
 			workflows.Get(args[1:])
 		case common.TypeWorkflowRun, common.TypeWorkflowRunShort:

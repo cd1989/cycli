@@ -1,6 +1,8 @@
 package main
 
-import "github.com/cd1989/cycli/cmd"
+import (
+	"github.com/cd1989/cycli/cmd"
+)
 
 func main() {
 	cmd.Execute()
