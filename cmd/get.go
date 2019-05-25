@@ -12,11 +12,12 @@ import (
 )
 
 func init() {
-	getCmd.PersistentFlags().StringP("project", "p", "", "Project of the resources")
-	getCmd.PersistentFlags().StringP("type", "t", "", "Type of the resources")
-	getCmd.PersistentFlags().StringP("status", "s", "", "Status of WorkflowRun")
-	getCmd.PersistentFlags().StringP("clean", "c", "", "Whether GC is performed")
-	getCmd.PersistentFlags().StringP("wf", "w", "", "Workflow")
+	getCmd.Flags().StringP("project", "p", "", "Project of the resources")
+	getCmd.Flags().StringP("type", "t", "", "Type of the resources")
+	getCmd.Flags().StringP("status", "s", "", "Status of WorkflowRun")
+	getCmd.Flags().BoolP("cleaned", "c", false, "Whether GC is performed")
+	getCmd.Flags().StringP("wf", "w", "", "Workflow")
+	getCmd.Flags().BoolP("active", "a", true, "Whether Workflow is active")
 	rootCmd.AddCommand(getCmd)
 }
 
@@ -55,7 +56,7 @@ var getCmd = &cobra.Command{
 		case common.TypeStgTemplate, common.TypeStgTemplateShort:
 			stages.Get(args[1:], true)
 		case common.TypeWorkflow, common.TypeWorkflowShort:
-			workflows.Get(args[1:])
+			workflows.Get(cmd, args[1:])
 		case common.TypeWorkflowRun, common.TypeWorkflowRunShort:
 			workflowruns.Get(cmd, args[1:])
 		case common.TypeWorkflowTrigger, common.TypeWorkflowTrigerShort:

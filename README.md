@@ -15,4 +15,6 @@ $ cp ./bin/cycli /usr/local/bin/
 ```bash
 $ cycli use tenant devops
 $ cycli get stg
+$ cycli get wfr --status=f
+$ cycli get wf --active
 ```

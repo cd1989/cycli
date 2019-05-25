@@ -3,7 +3,6 @@ package workflowruns
 import (
 	"fmt"
 	"sort"
-	"strconv"
 
 	"github.com/caicloud/cyclone/pkg/apis/cyclone/v1alpha1"
 	"github.com/caicloud/cyclone/pkg/meta"
@@ -61,10 +60,12 @@ func Get(cmd *cobra.Command, args []string) {
 			}
 		}
 
-		if c := common.GetFlagValue(cmd, "clean"); c != "" {
-			tmp, _ := strconv.ParseBool(c)
-			if item.Status.Cleaned != tmp {
-				continue
+		c, err := cmd.Flags().GetBool("cleaned")
+		if err == nil {
+			if f := cmd.Flag("cleaned"); f != nil && f.Changed {
+				if c != item.Status.Cleaned {
+					continue
+				}
 			}
 		}
 
