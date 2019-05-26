@@ -11,6 +11,8 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"strings"
+
 	"github.com/cd1989/cycli/pkg/client"
 	"github.com/cd1989/cycli/pkg/common"
 	"github.com/cd1989/cycli/pkg/console"
@@ -90,11 +92,11 @@ func (s *wfStats) String() string {
 	if s.succeed+s.failed > 0 {
 		p := s.succeed * 100 / (s.succeed + s.failed)
 		if p >= 70 {
-			percent = color.GreenString("%03d%%", s.succeed*100/(s.succeed+s.failed))
+			percent = color.GreenString("%03d%%", p)
 		} else if p >= 50 {
-			percent = color.CyanString("%03d%%", s.succeed*100/(s.succeed+s.failed))
+			percent = color.CyanString("%03d%%", p)
 		} else {
-			percent = color.RedString("%03d%%", s.succeed*100/(s.succeed+s.failed))
+			percent = color.RedString("%03d%%", p)
 		}
 	}
 
@@ -104,6 +106,22 @@ func (s *wfStats) String() string {
 		fmt.Sprintf("%02d", s.failed),
 		fmt.Sprintf("%02d", s.running),
 		fmt.Sprintf("%02d", s.pending))
+}
+
+func (s *wfStats) Percent() string {
+	percent := ""
+	if s.succeed+s.failed > 0 {
+		p := s.succeed * 100 / (s.succeed + s.failed)
+		if p >= 70 {
+			percent = color.New(color.FgGreen, color.Bold).Sprint(strings.Repeat("|", p/5+1))
+		} else if p >= 50 {
+			percent = color.New(color.FgCyan, color.Bold).Sprint(strings.Repeat("|", p/5+1))
+		} else {
+			percent = color.New(color.FgRed, color.Bold).Sprint(strings.Repeat("|", p/5+1))
+		}
+	}
+
+	return percent
 }
 
 func getWfStats(cmd *cobra.Command, wf string) *wfStats {

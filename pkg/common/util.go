@@ -66,7 +66,7 @@ func GetFlagValue(cmd *cobra.Command, name string) string {
 }
 
 func plural(count int, singular string) (result string) {
-	result = strconv.Itoa(count) + singular + " "
+	result = strconv.Itoa(count) + singular
 	return
 }
 
@@ -85,9 +85,9 @@ func ReadableDuration(input int) (result string) {
 	seconds = input % 60
 
 	if years > 0 {
-		result = "> 1 year"
+		result = ">1 year"
 	} else if months > 0 {
-		result = "> 1 month"
+		result = ">1 month"
 	} else if weeks > 0 {
 		result = plural(int(weeks), "w") + plural(int(days), "d") + plural(int(hours), "h") + plural(int(minutes), "m") + plural(int(seconds), "s")
 	} else if days > 0 {
