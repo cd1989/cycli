@@ -23,7 +23,7 @@ func init() {
 }
 
 var getCmd = &cobra.Command{
-	Use:   "get [resource type]",
+	Use:   "get [rsc|stg|wf|wfr|wft|itg]",
 	Short: "Get resources(resource, stage, workflow, etc) in Cyclone",
 	Long:  "Get resources(resource, stage, workflow, etc) in Cyclone",
 	ValidArgs: []string{
