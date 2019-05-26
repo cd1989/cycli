@@ -11,9 +11,13 @@ import (
 
 	"github.com/cd1989/cycli/pkg/console/table"
 	"github.com/cd1989/cycli/pkg/dag"
+	"github.com/cd1989/cycli/pkg/workflowruns"
 )
 
-func RenderWorkflow(wf *v1alpha1.Workflow, stats *wfStats) {
+func RenderWorkflow(wf *v1alpha1.Workflow, wfrs []v1alpha1.WorkflowRun, stats *wfStats) {
+	RenderWorkflowItems([]v1alpha1.Workflow{*wf}, map[string]*wfStats{wf.Name: stats})
+
+	color.New(color.FgCyan, color.Bold).Println("\n[WORKFLOW DAG]")
 	dagRender := dag.NewAsciDAGRender(emoji.Sprint(":large_blue_circle:"))
 	for _, stg := range wf.Spec.Stages {
 		dagRender.AddNode(&dag.Node{Name: stg.Name})
@@ -25,6 +29,9 @@ func RenderWorkflow(wf *v1alpha1.Workflow, stats *wfStats) {
 		}
 	}
 	dagRender.Render()
+
+	color.New(color.FgCyan, color.Bold).Println("\n[EXECUTION RECORDS]")
+	workflowruns.RenderWorkflowRunItems(wfrs)
 }
 
 func RenderWorkflowItems(wfs []v1alpha1.Workflow, statsMap map[string]*wfStats) {

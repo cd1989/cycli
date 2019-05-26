@@ -7,16 +7,14 @@ import (
 	"github.com/mattn/go-runewidth"
 
 	"github.com/cd1989/cycli/pkg/console"
+	"github.com/fatih/color"
 )
 
-type Node struct {
-	Name string
-}
+const labels = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-type Edge struct {
-	From      string
-	To        string
-	Decorator func(format string, a ...interface{}) string
+type Node struct {
+	Name    string
+	Element string
 }
 
 type AsciDAG struct {
@@ -139,6 +137,9 @@ func (d *AsciDAG) Render() {
 
 	// Draw nodes in canvas
 	nodesPositions := make(map[string]Position)
+	trimedNodeWidth := runewidth.StringWidth(strings.TrimSpace(d.nodeElement))
+	var realLabels []string
+	var labelIndex int
 	for level, nodes := range leveledNodes {
 		var x, y int
 		x = (xStep + 1) * level
@@ -146,16 +147,25 @@ func (d *AsciDAG) Render() {
 		// Put node placeholder in each row, so that edges can align correctly
 		for y := 0; y < displayHeight; y++ {
 			// Trim space for emoji
-			canvas[y][x] = strings.Repeat(" ", runewidth.StringWidth(strings.TrimSpace(d.nodeElement)))
+			canvas[y][x] = strings.Repeat(" ", trimedNodeWidth)
 		}
 
 		for i, n := range nodes {
 			y = i * yStep
-			canvas[y][x] = d.nodeElement
+			if n.Element != "" {
+				canvas[y][x] = n.Element
+			} else {
+				canvas[y][x] = d.nodeElement
+			}
 			nodesPositions[n.Name] = Position{
 				X: x,
 				Y: y,
 			}
+
+			// Draw label for node
+			canvas[y+1][x] = fmt.Sprintf(fmt.Sprintf("%%-%ds", trimedNodeWidth), string(labels[labelIndex]))
+			realLabels = append(realLabels, n.Name)
+			labelIndex++
 		}
 	}
 
@@ -167,29 +177,37 @@ func (d *AsciDAG) Render() {
 			break
 		}
 
-		d.drawEdge(from, to, canvas)
+		d.drawEdge(edge, from, to, canvas)
 	}
 
+	// Display labels
+	for i, n := range realLabels {
+		fmt.Printf("%s: %s\t", color.GreenString(string(labels[i])), n)
+	}
+	fmt.Println()
+	fmt.Println()
+
+	// Display DAG
 	for _, row := range canvas {
 		fmt.Println(strings.Join(row, ""))
 	}
 }
 
-func (d *AsciDAG) drawEdge(from, to Position, canvas [][]string) {
+func (d *AsciDAG) drawEdge(edge *Edge, from, to Position, canvas [][]string) {
 	// Draw vertical line
 	if from.X == to.X {
 		x := from.X
 		y1, y2 := from.Y, to.Y
 		if y1 < y2 {
 			for y := y1; y < y2; y++ {
-				canvas[y][x] = "│"
+				canvas[y][x] = edge.v()
 			}
-			canvas[y2-1][x] = "v"
+			canvas[y2-1][x] = edge.bArrow()
 		} else {
 			for y := y2; y < y1; y++ {
-				canvas[y][x] = "│"
+				canvas[y][x] = edge.v()
 			}
-			canvas[y2+1][x] = "^"
+			canvas[y2+1][x] = edge.tArrow()
 		}
 		return
 	}
@@ -198,9 +216,9 @@ func (d *AsciDAG) drawEdge(from, to Position, canvas [][]string) {
 	if from.Y == to.Y {
 		y := from.Y
 		for x := from.X + 2; x < to.X-1; x++ {
-			canvas[y][x] = "─"
+			canvas[y][x] = edge.h()
 		}
-		canvas[y][to.X-2] = ">"
+		canvas[y][to.X-2] = edge.rArrow()
 	}
 
 	// Draw polyline
@@ -211,17 +229,17 @@ func (d *AsciDAG) drawEdge(from, to Position, canvas [][]string) {
 	if from.Y < to.Y {
 		turningX := from.X + (to.X-from.X-1)*4/10 + 1
 		for x := from.X + 2; x < turningX; x++ {
-			canvas[from.Y][x] = "─"
+			canvas[from.Y][x] = edge.h()
 		}
 		for y := from.Y; y < to.Y; y++ {
-			canvas[y][turningX] = "│"
+			canvas[y][turningX] = edge.v()
 		}
 		for x := turningX; x < to.X-1; x++ {
-			canvas[to.Y][x] = "─"
+			canvas[to.Y][x] = edge.h()
 		}
-		canvas[to.Y][to.X-2] = ">"
-		canvas[from.Y][turningX] = "╮"
-		canvas[to.Y][turningX] = "╰"
+		canvas[to.Y][to.X-2] = edge.rArrow()
+		canvas[from.Y][turningX] = edge.rt()
+		canvas[to.Y][turningX] = edge.lb()
 	}
 
 	// Draw polyline
@@ -232,16 +250,16 @@ func (d *AsciDAG) drawEdge(from, to Position, canvas [][]string) {
 	if from.Y > to.Y {
 		turningX := from.X + (to.X-from.X-1)*4/10 + 1
 		for x := from.X + 2; x < turningX; x++ {
-			canvas[from.Y][x] = "─"
+			canvas[from.Y][x] = edge.h()
 		}
 		for y := to.Y; y < from.Y; y++ {
-			canvas[y][turningX] = "│"
+			canvas[y][turningX] = edge.v()
 		}
 		for x := turningX; x < to.X-1; x++ {
-			canvas[to.Y][x] = "─"
+			canvas[to.Y][x] = edge.h()
 		}
-		canvas[to.Y][to.X-2] = ">"
-		canvas[from.Y][turningX] = "╯"
-		canvas[to.Y][turningX] = "╭"
+		canvas[to.Y][to.X-2] = edge.rArrow()
+		canvas[from.Y][turningX] = edge.rb()
+		canvas[to.Y][turningX] = edge.lt()
 	}
 }

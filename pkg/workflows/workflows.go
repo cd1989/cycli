@@ -36,14 +36,15 @@ func Get(cmd *cobra.Command, args []string) {
 		wf, err := client.K8sClient.CycloneV1alpha1().Workflows(common.MetaNamespace(context.GetTenant())).Get(args[0], metav1.GetOptions{})
 		if err != nil {
 			if errors.IsNotFound(err) {
-				fmt.Printf("WorkflowRun %s %s %s\n", args[0], color.RedString("NOT FOUND"), emoji.Sprint(":beer:"))
+				fmt.Printf("Workflow %s %s %s\n", args[0], color.RedString("NOT FOUND"), emoji.Sprint(":beer:"))
 			} else {
-				console.Error("Get WorkflowRun error: ", err)
+				console.Error("Get Workflow error: ", err)
 			}
 			return
 		}
 
-		RenderWorkflow(wf, getWfStats(cmd, wf.Name))
+		wfrs, stats := getWfStats(cmd, wf.Name)
+		RenderWorkflow(wf, wfrs, stats)
 		return
 	}
 
@@ -122,17 +123,22 @@ func (s *wfStats) Percent() string {
 	return percent
 }
 
-func getWfStats(cmd *cobra.Command, wf string) *wfStats {
-	wfrs, err := client.K8sClient.CycloneV1alpha1().WorkflowRuns(common.MetaNamespace(context.GetTenant())).List(metav1.ListOptions{
-		LabelSelector: fmt.Sprintf("%s=%s", meta.LabelWorkflowName, wf),
-	})
+func getWfStats(cmd *cobra.Command, wf string) ([]v1alpha1.WorkflowRun, *wfStats) {
+	wfrs, err := client.K8sClient.CycloneV1alpha1().WorkflowRuns(common.MetaNamespace(context.GetTenant())).List(metav1.ListOptions{})
 	if err != nil {
 		console.Error("List WorkflowRuns for stats error: ", err)
-		return &wfStats{}
+		return nil, &wfStats{}
+	}
+
+	var items []v1alpha1.WorkflowRun
+	for _, item := range wfrs.Items {
+		if item.Spec.WorkflowRef.Name == wf {
+			items = append(items, item)
+		}
 	}
 
 	stats := &wfStats{}
-	for _, wfr := range wfrs.Items {
+	for _, wfr := range items {
 		switch wfr.Status.Overall.Phase {
 		case v1alpha1.StatusSucceeded:
 			stats.succeed++
@@ -146,7 +152,7 @@ func getWfStats(cmd *cobra.Command, wf string) *wfStats {
 		}
 	}
 
-	return stats
+	return items, stats
 }
 
 func getWfsStats(cmd *cobra.Command) map[string]*wfStats {

@@ -42,7 +42,13 @@ func Get(cmd *cobra.Command, args []string) {
 			return
 		}
 
-		RenderWorkflowRunItems(cmd, []v1alpha1.WorkflowRun{*wfr})
+		wf, err := client.K8sClient.CycloneV1alpha1().Workflows(common.MetaNamespace(context.GetTenant())).Get(wfr.Spec.WorkflowRef.Name, metav1.GetOptions{})
+		if err != nil {
+			console.Error(fmt.Sprintf("Get Workflow %s error: %v", wfr.Spec.WorkflowRef.Name, err))
+			return
+		}
+
+		RenderWorkflowRun(wfr, wf)
 		return
 	}
 
@@ -79,7 +85,7 @@ func Get(cmd *cobra.Command, args []string) {
 	}
 
 	sort.Sort(SortByCreationTime(items))
-	RenderWorkflowRunItems(cmd, items)
+	RenderWorkflowRunItems(items)
 }
 
 func getLabel(wfr *v1alpha1.WorkflowRun, label string) string {
