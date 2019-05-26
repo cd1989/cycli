@@ -30,11 +30,9 @@ func determineNodeElement(wfr *v1alpha1.WorkflowRun, stg string) string {
 		case v1alpha1.StatusSucceeded:
 			return emoji.Sprint(":white_check_mark:")
 		case v1alpha1.StatusFailed:
-			return emoji.Sprint(":red_circle:")
+			return emoji.Sprint(":x:")
 		case v1alpha1.StatusRunning:
 			return emoji.Sprint(":cyclone:")
-		case v1alpha1.StatusCancelled:
-			return emoji.Sprint(":black_circle:")
 		}
 	}
 
@@ -50,7 +48,7 @@ func determineEdgeDecorator(wfr *v1alpha1.WorkflowRun, from, to string) func(for
 		}
 	}
 
-	if _, ok := wfr.Status.Stages[to]; !ok {
+	if s, ok := wfr.Status.Stages[to]; !ok || s.Status.Phase == v1alpha1.StatusCancelled {
 		return nil
 	}
 
