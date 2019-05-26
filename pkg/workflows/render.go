@@ -10,7 +10,22 @@ import (
 	"github.com/kyokomi/emoji"
 
 	"github.com/cd1989/cycli/pkg/console/table"
+	"github.com/cd1989/cycli/pkg/dag"
 )
+
+func RenderWorkflow(wf *v1alpha1.Workflow, stats *wfStats) {
+	dagRender := dag.NewAsciDAGRender(emoji.Sprint(":large_blue_circle:"))
+	for _, stg := range wf.Spec.Stages {
+		dagRender.AddNode(&dag.Node{Name: stg.Name})
+		for _, depend := range stg.Depends {
+			dagRender.AddEdge(&dag.Edge{
+				From: depend,
+				To:   stg.Name,
+			})
+		}
+	}
+	dagRender.Render()
+}
 
 func RenderWorkflowItems(wfs []v1alpha1.Workflow, statsMap map[string]*wfStats) {
 	var rows [][]string

@@ -20,13 +20,13 @@ type winsize struct {
 
 func TermSize() (uint, uint) {
 	ws := &winsize{}
-	retCode, _, errno := syscall.Syscall(syscall.SYS_IOCTL,
+	retCode, _, _ := syscall.Syscall(syscall.SYS_IOCTL,
 		uintptr(syscall.Stdin),
 		uintptr(syscall.TIOCGWINSZ),
 		uintptr(unsafe.Pointer(ws)))
 
 	if int(retCode) == -1 {
-		panic(errno)
+		return 0, 0
 	}
 	return uint(ws.Col), uint(ws.Row)
 }

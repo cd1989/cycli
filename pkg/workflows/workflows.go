@@ -43,9 +43,7 @@ func Get(cmd *cobra.Command, args []string) {
 			return
 		}
 
-		RenderWorkflowItems([]v1alpha1.Workflow{*wf}, map[string]*wfStats{
-			wf.Name: getWfStats(cmd, wf.Name),
-		})
+		RenderWorkflow(wf, getWfStats(cmd, wf.Name))
 		return
 	}
 
