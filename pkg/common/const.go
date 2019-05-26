@@ -13,6 +13,8 @@ const (
 	TypeWorkflowTrigerShort = "wft"
 	TypeStgTemplate         = "template"
 	TypeStgTemplateShort    = "tpl"
+	TypeIntegration         = "itg"
+	TypeIntegrationShort    = "integration"
 
 	ContextTenant  = "tenant"
 	ContextProject = "project"

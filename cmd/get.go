@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/cd1989/cycli/pkg/common"
+	"github.com/cd1989/cycli/pkg/integrations"
 	"github.com/cd1989/cycli/pkg/resources"
 	"github.com/cd1989/cycli/pkg/stages"
 	"github.com/cd1989/cycli/pkg/workflowruns"
@@ -37,7 +38,9 @@ var getCmd = &cobra.Command{
 		common.TypeWorkflowTrigger,
 		common.TypeWorkflowTrigerShort,
 		common.TypeStgTemplate,
-		common.TypeStgTemplateShort},
+		common.TypeStgTemplateShort,
+		common.TypeIntegration,
+		common.TypeIntegrationShort},
 	Args: func(cmd *cobra.Command, args []string) error {
 		if err := cobra.MinimumNArgs(1)(cmd, args); err != nil {
 			return err
@@ -61,6 +64,8 @@ var getCmd = &cobra.Command{
 			workflowruns.Get(cmd, args[1:])
 		case common.TypeWorkflowTrigger, common.TypeWorkflowTrigerShort:
 			workflowtriggers.Get(args[1:])
+		case common.TypeIntegrationShort, common.TypeIntegration:
+			integrations.Get(cmd, args[1:])
 		}
 	},
 }

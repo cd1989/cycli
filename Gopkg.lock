@@ -3,7 +3,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:80250fa52d058255886b69a426e9a0fd15fc90075c1d16387cddb4b3b949578b"
+  digest = "1:3895616877a8cf4a4a01615a8fe07522b3061acf2557cc444e2596c1d9d26fa4"
   name = "github.com/caicloud/cyclone"
   packages = [
     "pkg/apis/cyclone/v1alpha1",
@@ -12,6 +12,9 @@
     "pkg/k8s/clientset/scheme",
     "pkg/k8s/clientset/typed/cyclone/v1alpha1",
     "pkg/meta",
+    "pkg/server/apis/v1alpha1",
+    "pkg/server/biz/integration",
+    "pkg/server/common",
   ]
   pruneopts = "UT"
   revision = "d8ad3670d0bb664da112c6f15443279f71eb2c85"
@@ -397,7 +400,7 @@
   version = "kubernetes-1.12.3"
 
 [[projects]]
-  digest = "1:20e81d00ebab40306e54d2fae81fd150af032d5181f6baf5528215d6f9fdaba0"
+  digest = "1:0ed26acd86e249e3b24fe3770defdb389bf812f7f3f887f94adb4d46e9542481"
   name = "k8s.io/apimachinery"
   packages = [
     "pkg/api/errors",
@@ -431,6 +434,7 @@
     "pkg/util/sets",
     "pkg/util/validation",
     "pkg/util/validation/field",
+    "pkg/util/wait",
     "pkg/util/yaml",
     "pkg/version",
     "pkg/watch",
@@ -441,7 +445,7 @@
   version = "kubernetes-1.12.3"
 
 [[projects]]
-  digest = "1:51fd9ac9f2be10d79f5af101a7a1d758ef283fdb028a0d11198754bd3d4a6020"
+  digest = "1:e77b1751c6b62bdb74ce2cf90c2ee9a681691617d9a22f8366525ef2be364b95"
   name = "k8s.io/client-go"
   packages = [
     "discovery",
@@ -498,6 +502,7 @@
     "util/flowcontrol",
     "util/homedir",
     "util/integer",
+    "util/retry",
   ]
   pruneopts = "UT"
   revision = "d082d5923d3cc0bfbb066ee5fbdea3d0ca79acf8"
@@ -510,6 +515,8 @@
     "github.com/caicloud/cyclone/pkg/apis/cyclone/v1alpha1",
     "github.com/caicloud/cyclone/pkg/k8s/clientset",
     "github.com/caicloud/cyclone/pkg/meta",
+    "github.com/caicloud/cyclone/pkg/server/apis/v1alpha1",
+    "github.com/caicloud/cyclone/pkg/server/biz/integration",
     "github.com/fatih/color",
     "github.com/kyokomi/emoji",
     "github.com/mattn/go-runewidth",
